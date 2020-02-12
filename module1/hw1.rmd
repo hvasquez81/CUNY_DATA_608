@@ -52,8 +52,12 @@ Create a graph that shows the distribution of companies in the dataset by State 
 ```{r}
 
 # Answer Question 1 here
-hist_q1 = ggplot(data = inc, aes(x = State)) + geom_bar() + theme(axis.text.x = element_text(angle = 90)) + labs(title = 'Distribution of Companies by State')
-hist_q1
+inc %>%
+  group_by(State) %>%
+  count() %>%
+  rename(total = n) %>% 
+  ggplot(aes(x = reorder(State, total), y = total)) + geom_bar(stat = 'identity') + theme(axis.text.x = element_text(angle = 90)) + labs(title = 'Distribution of Companies by State', x = 'State', y = 'Total') + coord_flip()
+  
 ```
 
 ## Quesiton 2
@@ -65,7 +69,9 @@ Lets dig in on the state with the 3rd most companies in the data set. Imagine yo
 # Answer Question 2 here
 # based on graph from problem 1, 3rd most companies by state is NY
 
-inc %>% filter(State == 'NY', complete.cases(.)) %>% ggplot(aes(x = reorder(Industry, Employees), y = Employees)) + geom_boxplot(outlier.color = 'Red') + coord_flip() + stat_summary(fun.y = mean, geom = 'point', color = 'Blue') + labs(title = 'Average/Median Employment by Industry for Companies in NY') + ylim(0, 1500) 
+inc %>% 
+  filter(State == 'NY', complete.cases(.)) %>% 
+  ggplot(aes(x = reorder(Industry, Employees), y = Employees)) + geom_boxplot(outlier.color = 'Red') + coord_flip() + stat_summary(fun.y = mean, geom = 'point', color = 'Blue') + labs(title = 'Average/Median Employment by Industry for Companies in NY') + ylim(0, 1500) 
 
 ```
 
@@ -76,41 +82,12 @@ Now imagine you work for an investor and want to see which industries generate t
 ```{r}
 
 # Answer Question 3 here
-subset_q3 = inc %>% group_by(Industry) %>% summarize(IndustryRevenue = sum(Revenue, na.rm = TRUE), IndustryEmployees = sum(Employees, na.rm = TRUE)) %>% mutate(IndustryRevenuePerEmployee = (IndustryRevenue/IndustryEmployees))
+subset_q3 = inc %>% 
+  group_by(Industry) %>% 
+  summarize(IndustryRevenue = sum(Revenue, na.rm = TRUE), IndustryEmployees = sum(Employees, na.rm = TRUE)) %>% 
+  mutate(IndustryRevenuePerEmployee = (IndustryRevenue/IndustryEmployees))
 
-subset_q3 %>% ggplot(aes(x = reorder(Industry, IndustryRevenuePerEmployee), y = IndustryRevenuePerEmployee)) + geom_bar(stat = 'identity') + labs(x = 'Industry', y = 'Revenue per Employee') + coord_flip() 
+subset_q3 %>% 
+  ggplot(aes(x = reorder(Industry, IndustryRevenuePerEmployee), y = IndustryRevenuePerEmployee)) + geom_bar(stat = 'identity') + labs(x = 'Industry', y = 'Revenue per Employee', title = 'Average Revenue per Employee') + coord_flip() 
 
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
