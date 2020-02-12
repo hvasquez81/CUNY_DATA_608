@@ -82,12 +82,10 @@ Now imagine you work for an investor and want to see which industries generate t
 ```{r}
 
 # Answer Question 3 here
-subset_q3 = inc %>% 
+inc %>% 
   group_by(Industry) %>% 
   summarize(IndustryRevenue = sum(Revenue, na.rm = TRUE), IndustryEmployees = sum(Employees, na.rm = TRUE)) %>% 
-  mutate(IndustryRevenuePerEmployee = (IndustryRevenue/IndustryEmployees))
-
-subset_q3 %>% 
+  mutate(IndustryRevenuePerEmployee = (IndustryRevenue/IndustryEmployees)) %>% 
   ggplot(aes(x = reorder(Industry, IndustryRevenuePerEmployee), y = IndustryRevenuePerEmployee)) + geom_bar(stat = 'identity') + labs(x = 'Industry', y = 'Revenue per Employee', title = 'Average Revenue per Employee') + coord_flip() 
 
 ```
