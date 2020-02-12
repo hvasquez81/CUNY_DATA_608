@@ -1,9 +1,15 @@
 ---
-title: "R Notebook"
-output:
-  html_document: default
-  html_notebook: default
+title: "DATA608-HW1"
+author: "Henry Vasquez"
+date: "February 3, 2020"
+output: html_document
 ---
+
+```{r}
+library(ggplot2)
+library(dplyr)
+```
+
 
 **Principles of Data Visualization and Introduction to ggplot2**
 
@@ -22,6 +28,7 @@ And lets preview this data:
 head(inc)
 
 ```
+
 ```{r}
 
 summary(inc)
@@ -33,6 +40,8 @@ Think a bit on what these summaries mean. Use the space below to add some more r
 ```{r}
 
 # Insert your code here, create more chunks as necessary
+# look at structure of data
+str(inc)
 
 ```
 
@@ -43,7 +52,8 @@ Create a graph that shows the distribution of companies in the dataset by State 
 ```{r}
 
 # Answer Question 1 here
-
+hist_q1 = ggplot(data = inc, aes(x = State)) + geom_bar() + theme(axis.text.x = element_text(angle = 90)) + labs(title = 'Distribution of Companies by State')
+hist_q1
 ```
 
 ## Quesiton 2
@@ -53,6 +63,9 @@ Lets dig in on the state with the 3rd most companies in the data set. Imagine yo
 ```{r}
 
 # Answer Question 2 here
+# based on graph from problem 1, 3rd most companies by state is NY
+
+inc %>% filter(State == 'NY', complete.cases(.)) %>% ggplot(aes(x = reorder(Industry, Employees), y = Employees)) + geom_boxplot(outlier.color = 'Red') + coord_flip() + stat_summary(fun.y = mean, geom = 'point', color = 'Blue') + labs(title = 'Average/Median Employment by Industry for Companies in NY') + ylim(0, 1500) 
 
 ```
 
@@ -63,7 +76,41 @@ Now imagine you work for an investor and want to see which industries generate t
 ```{r}
 
 # Answer Question 3 here
+subset_q3 = inc %>% group_by(Industry) %>% summarize(IndustryRevenue = sum(Revenue, na.rm = TRUE), IndustryEmployees = sum(Employees, na.rm = TRUE)) %>% mutate(IndustryRevenuePerEmployee = (IndustryRevenue/IndustryEmployees))
+
+subset_q3 %>% ggplot(aes(x = reorder(Industry, IndustryRevenuePerEmployee), y = IndustryRevenuePerEmployee)) + geom_bar(stat = 'identity') + labs(x = 'Industry', y = 'Revenue per Employee') + coord_flip() 
 
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
